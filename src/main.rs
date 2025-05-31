@@ -8,9 +8,11 @@ use serenity::{
 use tracing::{error, info};
 
 mod commands;
+mod db;
 mod utils;
 
 struct Handler {
+    pool: db::Pool,
     developer_mode: bool,
     test_guild: Option<GuildId>,
 }
@@ -57,10 +59,13 @@ async fn main() -> anyhow::Result<()> {
         .and_then(|s| s.parse::<u64>().ok())
         .map(GuildId::new);
 
+    let pool = db::init_pool().await?;
+
     let intents = GatewayIntents::non_privileged();
 
     let mut client = Client::builder(&token, intents)
         .event_handler(Handler {
+            pool,
             developer_mode,
             test_guild,
         })
