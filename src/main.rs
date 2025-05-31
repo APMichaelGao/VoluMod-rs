@@ -6,9 +6,9 @@ use serenity::{
     all::{Client, EventHandler, GatewayIntents, GuildId, Interaction, Ready, Context}
 };
 use tracing::{error, info};
-use tracing_subscriber::{fmt, EnvFilter};
 
 mod commands;
+mod utils;
 
 struct Handler {
     developer_mode: bool,
@@ -45,9 +45,7 @@ impl EventHandler for Handler {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     dotenvy::dotenv().ok();
-
-    let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
-    fmt().with_env_filter(filter).init();
+    utils::init_tracing();
 
     let token = env::var("BOT_TOKEN").context("BOT_TOKEN missing")?;
     let developer_mode = env::var("DEVELOPER_MODE")
