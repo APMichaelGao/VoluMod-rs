@@ -1,3 +1,5 @@
+//! Utilities module
+
 use tracing_subscriber::{fmt, EnvFilter};
 
 pub fn init_tracing() {
