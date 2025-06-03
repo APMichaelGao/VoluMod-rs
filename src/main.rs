@@ -2,14 +2,14 @@ use std::env;
 
 use anyhow::Context as AnyhowContext;
 use async_trait::async_trait;
-use serenity::{
-    all::{Client, EventHandler, GatewayIntents, GuildId, Interaction, Ready, Context}
-};
+use serenity::all::{Client, Context, EventHandler, GatewayIntents, GuildId, Interaction, Ready};
+use songbird::SerenityInit;
 use tracing::{error, info};
 
 mod commands;
 mod db;
 mod utils;
+mod audio;
 
 struct Handler {
     pool: db::Pool,
@@ -61,7 +61,9 @@ async fn main() -> anyhow::Result<()> {
 
     let pool = db::init_pool().await?;
 
-    let intents = GatewayIntents::non_privileged();
+    let intents = GatewayIntents::non_privileged() 
+        | GatewayIntents::GUILD_VOICE_STATES
+        | GatewayIntents::GUILDS;
 
     let mut client = Client::builder(&token, intents)
         .event_handler(Handler {
@@ -69,6 +71,7 @@ async fn main() -> anyhow::Result<()> {
             developer_mode,
             test_guild,
         })
+        .register_songbird()
         .await?;
 
     if let Err(why) = client.start().await {
