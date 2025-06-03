@@ -3,6 +3,8 @@
 pub mod command;
 // commands
 pub mod ping;
+pub mod join;
+pub mod leave;
 
 use command::Command;
 use serenity::{builder::Builder, http::Http, model::id::GuildId};
@@ -10,8 +12,9 @@ use tracing::error;
 
 
 static COMMANDS: &[&dyn Command] = &[
-    &ping::PING,
-];
+    &ping::PING, 
+    &join::JOIN, 
+    &leave::LEAVE];
 
 pub async fn register_global_commands(http: &Http) -> serenity::Result<()> {
     for cmd in COMMANDS {
