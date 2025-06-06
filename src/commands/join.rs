@@ -1,5 +1,5 @@
 use serenity::{
-    all::{CommandInteraction, Context},
+    all::{CommandInteraction, Context, InteractionResponseFlags},
     builder::{
         CreateCommand, CreateInteractionResponse,
         CreateInteractionResponseMessage,
@@ -21,7 +21,7 @@ impl Command for Join {
 
     fn register(&self) -> CreateCommand {
         CreateCommand::new(self.name())
-            .description("join a voice channel")
+            .description("Join a voice channel and begin monitoring")
     }
 
     fn run<'a>(&'a self, ctx: &'a Context, itx: &'a CommandInteraction) -> CommandFuture<'a> {
@@ -42,7 +42,8 @@ impl Command for Join {
                 itx.create_response(
                     &ctx.http,
                     CreateInteractionResponse::Message(
-                        CreateInteractionResponseMessage::new().content("joined"),
+                        CreateInteractionResponseMessage::new().content("Joined the voice channel.")
+                        .flags(InteractionResponseFlags::EPHEMERAL),
                     ),
                 )
                 .await
@@ -50,7 +51,8 @@ impl Command for Join {
                 itx.create_response(
                     &ctx.http,
                     CreateInteractionResponse::Message(
-                        CreateInteractionResponseMessage::new().content("Please join a voice channel first."),
+                        CreateInteractionResponseMessage::new().content("Please join a voice channel first.")
+                        .flags(InteractionResponseFlags::EPHEMERAL),
                     ),
                 )
                 .await

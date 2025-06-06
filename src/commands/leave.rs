@@ -1,5 +1,5 @@
 use serenity::{
-    all::{CommandInteraction, Context},
+    all::{CommandInteraction, Context, InteractionResponseFlags},
     builder::{
         CreateCommand, CreateInteractionResponse, CreateInteractionResponseMessage,
     },
@@ -19,7 +19,7 @@ impl Command for Leave {
     }
 
     fn register(&self) -> CreateCommand {
-        CreateCommand::new(self.name()).description("leave voice")
+        CreateCommand::new(self.name()).description("Leaves the current voice channel")
     }
 
     fn run<'a>(&'a self, ctx: &'a Context, itx: &'a CommandInteraction) -> CommandFuture<'a> {
@@ -29,7 +29,7 @@ impl Command for Leave {
             itx.create_response(
                 &ctx.http,
                 CreateInteractionResponse::Message(
-                    CreateInteractionResponseMessage::new().content("left"),
+                    CreateInteractionResponseMessage::new().content("Failed to leave the voice channel.").flags(InteractionResponseFlags::EPHEMERAL),
                 ),
             )
             .await
